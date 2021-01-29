@@ -2,6 +2,7 @@
 #include <iostream>
 #include <GL/glut.h>
 typedef unsigned long long u64;
+using namespace std;
 
 struct face {
 	double width;
@@ -31,6 +32,7 @@ public:
 
 	}
 	void draw() {
+		glLoadIdentity();
 		glRotated(rotation[0], 1.0, 0.0, 0.0);
 		glRotated(rotation[1], 0.0, 1.0, 0.0);
 		glRotated(rotation[2], 0.0, 0.0, 1.0);
@@ -46,6 +48,9 @@ public:
 	//0=x, 1=y, 2=z
 	void rotateAdd(double angle, int xyz) {
 		if (xyz >= 0 && xyz < 3) {
+			rotation[xyz] += angle;
+			cout << "Rotation: " << rotation[xyz] << endl;
+			/*
 			double* r = &rotation[xyz];
 			*r += angle;
 			double div = *r / 360.0;
@@ -54,6 +59,7 @@ public:
 				*r -= 360.0 * div;
 			else if (div < 0)
 				*r += 360 * div;
+			*/
 		}
 		else
 			return;

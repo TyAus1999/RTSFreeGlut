@@ -9,18 +9,20 @@ typedef unsigned long long u64;
 vector<unit> units;
 
 void idleFunc() {
-
+	for (int i = 0; i < units.size(); i++) {
+		unit* u = &units[i];
+		u->rotateAdd(1, 0);
+	}
 	glutPostRedisplay();
 }
 
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glColor3d(0.0, 0.0, 0.0);
-	glLoadIdentity();
 	glBegin(GL_QUADS);
 		for (int i = 0; i < units.size(); i++) {
 			unit* u = &units[i];
-			u->rotateAdd(1, 2);
+			//u->rotateAdd(1, 1);
 			u->draw();
 		}
 	glEnd();
@@ -43,6 +45,7 @@ int main(int argv, char **args) {
 	glutCreateWindow("RTS Test");
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GLUT_MULTISAMPLE);
+	glMatrixMode(GL_PROJECTION);
 	glutIdleFunc(idleFunc);
 	glutDisplayFunc(display);
 	glutReshapeFunc(windowReshape);
