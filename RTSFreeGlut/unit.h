@@ -19,6 +19,7 @@ public:
 		initFaces();
 		initColours();
 		initRotation();
+		this->rotation[0] = 45;
 	}
 	unit(double x, double y, double z) {
 		this->x = x;
@@ -28,16 +29,21 @@ public:
 		initColours();
 		initRotation();
 	}
-	~unit() {
-
-	}
 	void draw() {
 		glLoadIdentity();
+		glTranslated(x, y, z);
 		glRotated(rotation[0], 1.0, 0.0, 0.0);
 		glRotated(rotation[1], 0.0, 1.0, 0.0);
 		glRotated(rotation[2], 0.0, 0.0, 1.0);
-		for (int i = 0; i < 6; i++)
-			this->drawFace(i);
+		glBegin(GL_QUADS);
+		
+		//Front face
+		glVertex3d(-1, 1, 0);
+		glVertex3d(-1, -1, 0);
+		glVertex3d(1, -1, 0);
+		glVertex3d(1, 1, 0);
+
+		glEnd();
 	}
 	void move(double x, double y, double z) {
 		this->x = x;
@@ -49,7 +55,7 @@ public:
 	void rotateAdd(double angle, int xyz) {
 		if (xyz >= 0 && xyz < 3) {
 			rotation[xyz] += angle;
-			cout << "Rotation: " << rotation[xyz] << endl;
+			//cout << "Rotation: " << rotation[xyz] << endl;
 			/*
 			double* r = &rotation[xyz];
 			*r += angle;
@@ -66,7 +72,7 @@ public:
 	}
 
 private:
-	double x, y, z;//this is the top left
+	double x, y, z;
 	double rotation[3];
 	double colours[3];
 	face faces[6];
