@@ -30,7 +30,6 @@ public:
 		initRotation();
 	}
 	void draw() {
-		glLoadIdentity();
 		glTranslated(x, y, z);
 		glRotated(rotation[0], 1.0, 0.0, 0.0);
 		glRotated(rotation[1], 0.0, 1.0, 0.0);
@@ -55,6 +54,10 @@ public:
 	void rotateAdd(double angle, int xyz) {
 		if (xyz >= 0 && xyz < 3) {
 			rotation[xyz] += angle;
+			if (rotation[xyz] > 360)
+				rotation[xyz] -= 360;
+			else if (rotation[xyz] < 0)
+				rotation[xyz] += 360;
 			//cout << "Rotation: " << rotation[xyz] << endl;
 			/*
 			double* r = &rotation[xyz];
