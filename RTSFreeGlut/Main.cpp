@@ -30,7 +30,7 @@ void idleFunc() {
 		//u->rotateAdd(0.5, 1);
 	}
 	if (currentEngine->LeftShift) {
-		double toUse = CameraVelocity*1.5;
+		double toUse = CameraVelocity*2;
 		double nToUse = -1 * toUse;
 		if (currentEngine->W)
 			currentCamera->moveByVel(0, 0, toUse, deltaT);
@@ -51,11 +51,11 @@ void idleFunc() {
 		else if (currentEngine->D)
 			currentCamera->moveByVel(nCameraVelocity, 0, 0, deltaT);
 	}
-	prevTime = currentTime;
 	glutPostRedisplay();
 }
 
 void display() {
+	u64 currentTime = getCurrentTimeMS();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	currentCamera->draw();
@@ -65,7 +65,7 @@ void display() {
 		//u->rotateAdd(1, 1);
 		u->draw();
 	}
-	
+	prevTime = currentTime;
 	glutSwapBuffers();
 }
 
