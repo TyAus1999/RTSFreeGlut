@@ -96,6 +96,13 @@ public:
 		__m256d _addAmount = _mm256_mul_pd(_velocities, _deltaT);
 		this->moveToAdd(_addAmount);
 	}
+
+	void resetLooking() {
+		lookingAt[0] = coords[0];
+		lookingAt[1] = coords[1];
+		lookingAt[2] = coords[2] + 5.0;
+	}
+
 	void draw() {
 		gluLookAt(coords[0], coords[1], coords[2],
 			lookingAt[0], lookingAt[1], lookingAt[2],
