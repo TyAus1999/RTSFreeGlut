@@ -10,7 +10,9 @@ typedef unsigned long long u64;
 
 vector<unit> units;
 Camera* currentCamera;
-double camVel = -10;
+Engine* currentEngine;
+double CameraVelocity=5;
+double nCameraVelocity = -1 * CameraVelocity;
 u64 prevTime;
 
 u64 getCurrentTimeMS() {
@@ -27,10 +29,27 @@ void idleFunc() {
 		//u->rotateAdd(0.5, 0);
 		//u->rotateAdd(0.5, 1);
 	}
-	currentCamera->moveByVel(0,0,camVel,deltaT);
-	if (currentCamera->coords[2] < -50 || currentCamera->coords[2] > -5) {
-		camVel *= -1;
-		currentCamera->moveByVel(0,0,camVel,deltaT);
+	if (currentEngine->LeftShift) {
+		double toUse = CameraVelocity*1.5;
+		double nToUse = -1 * toUse;
+		if (currentEngine->W)
+			currentCamera->moveByVel(0, 0, toUse, deltaT);
+		else if (currentEngine->S)
+			currentCamera->moveByVel(0, 0, nToUse, deltaT);
+		if (currentEngine->A)
+			currentCamera->moveByVel(toUse, 0, 0, deltaT);
+		else if (currentEngine->D)
+			currentCamera->moveByVel(nToUse, 0, 0, deltaT);
+	}
+	else {
+		if (currentEngine->W)
+			currentCamera->moveByVel(0, 0, CameraVelocity, deltaT);
+		else if (currentEngine->S)
+			currentCamera->moveByVel(0, 0, nCameraVelocity, deltaT);
+		if (currentEngine->A)
+			currentCamera->moveByVel(CameraVelocity, 0, 0, deltaT);
+		else if (currentEngine->D)
+			currentCamera->moveByVel(nCameraVelocity, 0, 0, deltaT);
 	}
 	prevTime = currentTime;
 	glutPostRedisplay();
@@ -61,6 +80,61 @@ void windowReshape(int x, int y) {
 	
 }
 
+void keyDown(unsigned char c, int x, int y) {
+	switch(c) {
+	case 'W':
+	case 'w':
+		currentEngine->W = true;
+		break;
+	case 'A':
+	case 'a':
+		currentEngine->A = true;
+		break;
+	case 'S':
+	case 's':
+		currentEngine->S = true;
+		break;
+	case 'D':
+	case 'd':
+		currentEngine->D = true;
+		break;
+	}
+}
+void keyUp(unsigned char c, int x, int y) {
+	switch (c) {
+	case 'W':
+	case 'w':
+		currentEngine->W = false;
+		break;
+	case 'A':
+	case 'a':
+		currentEngine->A = false;
+		break;
+	case 'S':
+	case 's':
+		currentEngine->S = false;
+		break;
+	case 'D':
+	case 'd':
+		currentEngine->D = false;
+		break;
+	}
+}
+void sKeyUp(int key, int x, int y) {
+	switch (key) {
+	case 112:
+		currentEngine->LeftShift = false;
+		break;
+	}
+}
+void sKeyDown(int key, int x, int y) {
+	switch (key) {
+	case 112:
+		currentEngine->LeftShift = true;
+		break;
+	}
+}
+
 int main(int argv, char **args) {
 	unit toAdd(0.0,0.0,0.0);
 	toAdd.move(0, 0, -3);
@@ -73,10 +147,15 @@ int main(int argv, char **args) {
 
 	char winName[] = "RTS Test\0";
 	Engine e(winName, argv, args);
+	currentEngine = &e;
 	e.setSize(500, 500);
 	e.setDisplay(display);
 	e.setIdle(idleFunc);
 	e.setReshape(windowReshape);
+	e.setKeyboardDown(keyDown);
+	e.setKeyboardUp(keyUp);
+	e.setSpecialDownKB(sKeyDown);
+	e.setSpecialUpKB(sKeyUp);
 	e.start();
 
 	/*

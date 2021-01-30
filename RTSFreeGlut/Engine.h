@@ -6,6 +6,8 @@
 //Want to add multithreading, mutexs is for a task in the future
 class Engine {
 public:
+	bool W, A, S, D;
+	bool LeftShift=false;
 	Engine(char *windowName, int argv, char **args) {
 		glutInit(&argv, args);
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_MULTISAMPLE | GLUT_DEPTH);
@@ -16,6 +18,10 @@ public:
 		glEnable(GLUT_MULTISAMPLE);
 
 		glCullFace(GL_FRONT);
+		W = false;
+		A = false;
+		S = false;
+		D = false;
 	}
 	void setSize(int w, int h) {
 		glutReshapeWindow(w, h);
@@ -28,6 +34,18 @@ public:
 	}
 	void setReshape(void (*reshapeFunc)(int, int)) {
 		glutReshapeFunc(reshapeFunc);
+	}
+	void setKeyboardDown(void (*kbd)(unsigned char, int, int)) {
+		glutKeyboardFunc(kbd);
+	}
+	void setKeyboardUp(void (*kbu)(unsigned char, int, int)) {
+		glutKeyboardUpFunc(kbu);
+	}
+	void setSpecialDownKB(void (*SKBD)(int, int, int)) {
+		glutSpecialFunc(SKBD);
+	}
+	void setSpecialUpKB(void (*SKBU)(int, int, int)) {
+		glutSpecialUpFunc(SKBU);
 	}
 	void start() {
 		glutMainLoop();
@@ -52,10 +70,6 @@ public:
 		up[1] = 1;
 		up[2] = 0;
 
-		//Only useful for avx
-		coords[3] = 0;
-		lookingAt[3] = 0;
-		up[3] = 0;
 	}
 	void moveByVel(double x, double y, double z, double deltaT) {
 		double toAdd[4];
@@ -82,7 +96,5 @@ private:
 		_resultLookingAt = _mm256_add_pd(_toAdd, _lookingAt);
 		_mm256_store_pd(coords, _resultCoords);
 		_mm256_store_pd(lookingAt, _resultLookingAt);
-		coords[3] = 0;
-		lookingAt[3] = 0;
 	}
 };
