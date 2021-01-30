@@ -146,6 +146,7 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine.h" />
     <ClInclude Include="unit.h" />
     <ClInclude Include="unitHandler.h" />
   </ItemGroup>
