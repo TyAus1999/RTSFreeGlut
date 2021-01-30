@@ -8,6 +8,10 @@ class Engine {
 public:
 	bool W, A, S, D;
 	bool LeftShift=false;
+	int mouseX=0;
+	int mouseY=0;
+	bool leftMouseDown = false;
+	bool rightMouseDown = false;
 	Engine(char *windowName, int argv, char **args) {
 		glutInit(&argv, args);
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_MULTISAMPLE | GLUT_DEPTH);
@@ -46,6 +50,12 @@ public:
 	}
 	void setSpecialUpKB(void (*SKBU)(int, int, int)) {
 		glutSpecialUpFunc(SKBU);
+	}
+	void setMouse(void (*mouseFunction)(int, int, int, int)) {
+		glutMouseFunc(mouseFunction);
+	}
+	void setMouseMotion(void(*mouseMotion)(int, int)) {
+		glutPassiveMotionFunc(mouseMotion);
 	}
 	void start() {
 		glutMainLoop();

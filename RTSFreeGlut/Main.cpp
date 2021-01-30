@@ -11,7 +11,7 @@ typedef unsigned long long u64;
 vector<unit> units;
 Camera* currentCamera;
 Engine* currentEngine;
-double CameraVelocity=5;
+double CameraVelocity=7;
 double nCameraVelocity = -1 * CameraVelocity;
 u64 prevTime;
 
@@ -30,7 +30,7 @@ void idleFunc() {
 		//u->rotateAdd(0.5, 1);
 	}
 	if (currentEngine->LeftShift) {
-		double toUse = CameraVelocity*2;
+		double toUse = CameraVelocity*5;
 		double nToUse = -1 * toUse;
 		if (currentEngine->W)
 			currentCamera->moveByVel(0, 0, toUse, deltaT);
@@ -134,11 +134,29 @@ void sKeyDown(int key, int x, int y) {
 		break;
 	}
 }
+void mouseFunc(int button, int state, int x, int y) {
+	bool s = (state) ? GLUT_UP : GLUT_DOWN;
+	switch (button) {
+	case GLUT_LEFT_BUTTON:
+		currentEngine->leftMouseDown = s;
+		//printf("Left Mouse is %s\n", (s) ? "Up" : "Down");
+		break;
+	case GLUT_RIGHT_BUTTON:
+		currentEngine->rightMouseDown = s;
+		//printf("Right Mouse is %s\n", (s) ? "Up" : "Down");
+		break;
+	}
+}
+void mouseMotion(int x, int y) {
+	currentEngine->mouseX = x;
+	currentEngine->mouseY = y;
+}
 
 int main(int argv, char **args) {
 	unit toAdd(0.0,0.0,0.0);
-	toAdd.move(0, 0, -3);
+	unit toAdd2(0, 0, 10);
 	units.push_back(toAdd);
+	units.push_back(toAdd2);
 
 	Camera c0(0, 5, -10);
 	c0.lookingAt[1] = 0;
@@ -156,6 +174,8 @@ int main(int argv, char **args) {
 	e.setKeyboardUp(keyUp);
 	e.setSpecialDownKB(sKeyDown);
 	e.setSpecialUpKB(sKeyUp);
+	e.setMouse(mouseFunc);
+	e.setMouseMotion(mouseMotion);
 	e.start();
 
 	/*
