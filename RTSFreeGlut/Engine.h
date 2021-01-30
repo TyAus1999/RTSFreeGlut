@@ -11,7 +11,11 @@ public:
 	int mouseX=0;
 	int mouseY=0;
 	bool leftMouseDown = false;
+	int mouseXOnLeftMouse = 0;
+	int mouseYOnLeftMouse = 0;
 	bool rightMouseDown = false;
+	int mouseXOnRightMouse = 0;
+	int mouseYOnRightMouse = 0;
 	Engine(char *windowName, int argv, char **args) {
 		glutInit(&argv, args);
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_MULTISAMPLE | GLUT_DEPTH);

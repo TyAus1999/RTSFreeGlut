@@ -59,7 +59,14 @@ void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	currentCamera->draw();
-	//gluLookAt(5.0, 0.0, -10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	//Draw Selection Box
+	if (currentEngine->leftMouseDown) {
+		glBegin(GL_QUADS);
+		glColor3d(0, 1, 0);
+
+		glEnd();
+	}
+	//==================
 	for (int i = 0; i < units.size(); i++) {
 		unit* u = &units[i];
 		//u->rotateAdd(1, 1);
@@ -140,10 +147,18 @@ void mouseFunc(int button, int state, int x, int y) {
 	case GLUT_LEFT_BUTTON:
 		currentEngine->leftMouseDown = s;
 		//printf("Left Mouse is %s\n", (s) ? "Up" : "Down");
+		if (!s) {
+			currentEngine->mouseXOnLeftMouse = x;
+			currentEngine->mouseYOnLeftMouse = y;
+		}
 		break;
 	case GLUT_RIGHT_BUTTON:
 		currentEngine->rightMouseDown = s;
 		//printf("Right Mouse is %s\n", (s) ? "Up" : "Down");
+		if (!s) {
+			currentEngine->mouseXOnRightMouse = x;
+			currentEngine->mouseYOnRightMouse = y;
+		}
 		break;
 	}
 }
