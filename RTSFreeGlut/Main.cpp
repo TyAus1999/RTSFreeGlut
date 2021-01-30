@@ -11,7 +11,8 @@ vector<unit> units;
 void idleFunc() {
 	for (int i = 0; i < units.size(); i++) {
 		unit* u = &units[i];
-		u->rotateAdd(1, 0);
+		u->rotateAdd(0.5, 0);
+		u->rotateAdd(0.5, 1);
 	}
 	glutPostRedisplay();
 }
@@ -19,8 +20,7 @@ void idleFunc() {
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-	gluLookAt(0.0, 0.0, -10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	glColor3d(0.8, 0.8, 0.8);
+	gluLookAt(5.0, 0.0, -10.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	for (int i = 0; i < units.size(); i++) {
 		unit* u = &units[i];
 		//u->rotateAdd(1, 1);
@@ -47,9 +47,12 @@ int main(int argv, char **args) {
 	units.push_back(toAdd);
 	
 	glutInit(&argv, args);
+	glutInitWindowSize(500, 500);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_MULTISAMPLE | GLUT_DEPTH);
 	glutCreateWindow("RTS Test");
 	
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GLUT_MULTISAMPLE);
 

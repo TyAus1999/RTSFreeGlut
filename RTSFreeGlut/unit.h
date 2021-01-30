@@ -30,6 +30,7 @@ public:
 		initRotation();
 	}
 	void draw() {
+		glPushMatrix();
 		glTranslated(x, y, z);
 		glRotated(rotation[0], 1.0, 0.0, 0.0);
 		glRotated(rotation[1], 0.0, 1.0, 0.0);
@@ -37,12 +38,49 @@ public:
 		glBegin(GL_QUADS);
 		
 		//Front face
-		glVertex3d(-1, 1, 0);
-		glVertex3d(-1, -1, 0);
-		glVertex3d(1, -1, 0);
-		glVertex3d(1, 1, 0);
+		glColor3d(0.5, 0.5, 0.5);
+		glVertex3d(-1, 1, -1);
+		glVertex3d(-1, -1, -1);
+		glVertex3d(1, -1, -1);
+		glVertex3d(1, 1, -1);
+
+		//Backface
+		glColor3d(1, 0.5, 0.5);
+		glVertex3d(-1, -1, 1);
+		glVertex3d(-1, 1, 1);
+		glVertex3d(1, 1, 1);
+		glVertex3d(1, -1, 1);
+
+		//Right face
+		glColor3d(0.5, 1, 0.5);
+		glVertex3d(1, 1, -1);
+		glVertex3d(1, -1, -1);
+		glVertex3d(1, -1, 1);
+		glVertex3d(1, 1, 1);
+
+		//Left Face
+		glColor3d(0.5, 0.5, 1);
+		glVertex3d(-1, 1, -1);
+		glVertex3d(-1, 1, 1);
+		glVertex3d(-1, -1, 1);
+		glVertex3d(-1, -1, -1);
+
+		//Top Face
+		glColor3d(1, 1, 0.5);
+		glVertex3d(-1, 1, -1);
+		glVertex3d(1, 1, -1);
+		glVertex3d(1, 1, 1);
+		glVertex3d(-1, 1, 1);
+
+		//Bottom Face
+		glColor3d(1, 0.5, 1);
+		glVertex3d(-1, -1, -1);
+		glVertex3d(-1, -1, 1);
+		glVertex3d(1, -1, 1);
+		glVertex3d(1, -1, -1);
 
 		glEnd();
+		glPopMatrix();
 	}
 	void move(double x, double y, double z) {
 		this->x = x;
@@ -58,17 +96,6 @@ public:
 				rotation[xyz] -= 360;
 			else if (rotation[xyz] < 0)
 				rotation[xyz] += 360;
-			//cout << "Rotation: " << rotation[xyz] << endl;
-			/*
-			double* r = &rotation[xyz];
-			*r += angle;
-			double div = *r / 360.0;
-			div = floor(div);
-			if (div > 0)
-				*r -= 360.0 * div;
-			else if (div < 0)
-				*r += 360 * div;
-			*/
 		}
 		else
 			return;
