@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="ThreadPool.h" />
     <ClInclude Include="unit.h" />
     <ClInclude Include="unitHandler.h" />
   </ItemGroup>

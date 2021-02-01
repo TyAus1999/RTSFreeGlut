@@ -79,10 +79,26 @@ void display() {
 	currentCamera->draw();
 	//Draw Selection Box
 	if (currentEngine->leftMouseDown) {
+		glPushMatrix();
+		__m256d _lookingAt = _mm256_load_pd(currentCamera->lookingAt);
+		__m256d _lookingAt2 = _mm256_movedup_pd(_lookingAt);
+		__m256d _mul = _mm256_mul_pd(_lookingAt, _lookingAt2);
+		__m256d _sqrtLookingAt = _mm256_sqrt_pd(_mul);
+		double sqrts[4];
+		_mm256_store_pd(sqrts, _sqrtLookingAt);
+		double added=0;
+		double mouseVector = (double)currentEngine->mouseX * (double)currentEngine->mouseX;
+		mouseVector += (double)currentEngine->mouseY * (double)currentEngine->mouseY;
+		mouseVector = sqrt(mouseVector);
+		for (char i = 0; i < 3; i++)
+			added += sqrts[i];
+
+
 		glBegin(GL_QUADS);
 			glColor3d(0, 1, 0);
 
 		glEnd();
+		glPopMatrix();
 	}
 
 	//Draw floor
