@@ -14,8 +14,6 @@ Engine* currentEngine;
 double CameraVelocity=7;
 double nCameraVelocity = -1 * CameraVelocity;
 u64 prevTime;
-int prevMouseX=0;
-int prevMouseY=0;
 
 u64 getCurrentTimeMS() {
 	u64 out = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -26,23 +24,21 @@ void idleFunc() {
 	u64 currentTime = getCurrentTimeMS();
 	double deltaT=(double)currentTime-(double)prevTime;
 	deltaT /= 1000;//Convert to seconds
-	for (int i = 0; i < units.size(); i++) {
-		unit* u = &units[i];
-		//u->rotateAdd(0.5, 0);
-		//u->rotateAdd(0.5, 1);
-	}
+	//printf("deltaT: %llf\n",deltaT);
+	//for (int i = 0; i < units.size(); i++) {
+	//	unit* u = &units[i];
+	//	//u->rotateAdd(0.5, 0);
+	//	//u->rotateAdd(0.5, 1);
+	//}
 
-	if (currentEngine->rightMouseDown) {
-		int* mx = &currentEngine->mouseX;
-		int* my = &currentEngine->mouseY;
-		int diffX = *mx - prevMouseX;
-		int diffY = *my - prevMouseY;
+	//if (currentEngine->rightMouseDown) {
+	//	int* mx = &currentEngine->mouseX;
+	//	int* my = &currentEngine->mouseY;
 
-		if (diffX < 0)
-			currentCamera->lookingAt[0] += 1;
-		else if (diffX > 0)
-			currentCamera->lookingAt[0] -= 1;
-	}
+	//	//printf("DiffX: %i\tDiffY: %i\n", diffX, diffY);
+
+	//	
+	//}
 
 	if (currentEngine->LeftShift) {
 		double toUse = CameraVelocity*5;
@@ -67,8 +63,6 @@ void idleFunc() {
 			currentCamera->moveByVel(nCameraVelocity, 0, 0, deltaT);
 	}
 
-	prevMouseX = currentEngine->mouseX;
-	prevMouseY = currentEngine->mouseY;
 	glutPostRedisplay();
 }
 
@@ -77,29 +71,6 @@ void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 	currentCamera->draw();
-	//Draw Selection Box
-	if (currentEngine->leftMouseDown) {
-		glPushMatrix();
-		__m256d _lookingAt = _mm256_load_pd(currentCamera->lookingAt);
-		__m256d _lookingAt2 = _mm256_movedup_pd(_lookingAt);
-		__m256d _mul = _mm256_mul_pd(_lookingAt, _lookingAt2);
-		__m256d _sqrtLookingAt = _mm256_sqrt_pd(_mul);
-		double sqrts[4];
-		_mm256_store_pd(sqrts, _sqrtLookingAt);
-		double added=0;
-		double mouseVector = (double)currentEngine->mouseX * (double)currentEngine->mouseX;
-		mouseVector += (double)currentEngine->mouseY * (double)currentEngine->mouseY;
-		mouseVector = sqrt(mouseVector);
-		for (char i = 0; i < 3; i++)
-			added += sqrts[i];
-
-
-		glBegin(GL_QUADS);
-			glColor3d(0, 1, 0);
-
-		glEnd();
-		glPopMatrix();
-	}
 
 	//Draw floor
 	glBegin(GL_QUADS);
@@ -110,7 +81,6 @@ void display() {
 		glVertex3d(-100, 0, 100);
 	glEnd();
 
-	//==================
 	for (int i = 0; i < units.size(); i++) {
 		unit* u = &units[i];
 		//u->rotateAdd(1, 1);
@@ -118,17 +88,6 @@ void display() {
 	}
 	prevTime = currentTime;
 	glutSwapBuffers();
-}
-
-void windowReshape(int x, int y) {
-	//printf("x: %i, y: %i\n", x, y);
-	glViewport(0, 0, x, y);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(90, (double)x/(double)y, 0.01, 100);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
 }
 
 void keyDown(unsigned char c, int x, int y) {
@@ -152,6 +111,11 @@ void keyDown(unsigned char c, int x, int y) {
 	case 'R':
 	case 'r':
 		currentCamera->resetLooking();
+		break;
+
+	case 'P':
+	case 'p':
+		currentCamera->setRotation(180, 0, 0);
 		break;
 	}
 }
@@ -202,7 +166,7 @@ void mouseFunc(int button, int state, int x, int y) {
 		break;
 	case GLUT_RIGHT_BUTTON:
 		currentEngine->rightMouseDown = s;
-		printf("Right Mouse is %s: %i\n", (s) ? "Down" : "Up",s);
+		//printf("Right Mouse is %s: %i\n", (s) ? "Down" : "Up",s);
 		if (!s) {
 			currentEngine->mouseXOnRightMouse = x;
 			currentEngine->mouseYOnRightMouse = y;
@@ -216,13 +180,11 @@ void mouseMotion(int x, int y) {
 }
 
 int main(int argv, char **args) {
-	unit toAdd(0.0,1,0.0);
+	unit toAdd(0, 1, 0);
 	unit toAdd2(0, 1, 10);
 	units.push_back(toAdd);
 	units.push_back(toAdd2);
-
-	Camera c0(0, 5, -10);
-	c0.lookingAt[1] = 0;
+	Camera c0(0, 1, -10);
 
 	currentCamera = &c0;
 
@@ -230,9 +192,8 @@ int main(int argv, char **args) {
 	Engine e(winName, argv, args);
 	currentEngine = &e;
 	e.setSize(500, 500);
-	e.setDisplay(display);
 	e.setIdle(idleFunc);
-	e.setReshape(windowReshape);
+	e.setDisplay(display);
 	e.setKeyboardDown(keyDown);
 	e.setKeyboardUp(keyUp);
 	e.setSpecialDownKB(sKeyDown);

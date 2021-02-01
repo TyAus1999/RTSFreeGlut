@@ -4,12 +4,6 @@
 typedef unsigned long long u64;
 using namespace std;
 
-struct face {
-	double width;
-	double height;
-	int direction;
-};
-
 class unit {
 public:
 	unit() {
